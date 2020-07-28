@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="aliyun-net-sdk-core" Version="1.5.8" />
+    <PackageReference Include="Hangfire.Core" Version="1.7.12" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.6" />
+    <PackageReference Include="MongoDB.Driver" Version="2.10.4" />
+    <PackageReference Include="MQTTnet.AspNetCore" Version="3.0.11" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.6.4" />
+  </ItemGroup>
+
+</Project>
