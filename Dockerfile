@@ -7,10 +7,12 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["SmartHomeGateway/SmartHomeGateway.csproj", "SmartHomeGateway/"]
-RUN dotnet restore "SmartHomeGateway/SmartHomeGateway.csproj"
+COPY ["src/SmartHomeGateway/SmartHomeGateway.csproj", "src/SmartHomeGateway/"]
+COPY ["src/SmartHome.Application/SmartHome.Application.csproj", "src/SmartHome.Application/"]
+COPY ["src/SmartHome.Domain/SmartHome.Domain.csproj", "src/SmartHome.Domain/"]
+RUN dotnet restore "src/SmartHomeGateway/SmartHomeGateway.csproj"
 COPY . .
-WORKDIR "/src/SmartHomeGateway"
+WORKDIR "/src/src/SmartHomeGateway"
 RUN dotnet build "SmartHomeGateway.csproj" -c Release -o /app/build
 
 FROM build AS publish
