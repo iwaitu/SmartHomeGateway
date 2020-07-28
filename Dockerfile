@@ -18,6 +18,10 @@ RUN dotnet build "SmartHomeGateway.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "SmartHomeGateway.csproj" -c Release -o /app/publish
 
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+&& echo 'Asia/Shanghai' >/etc/timezone
+
+
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
