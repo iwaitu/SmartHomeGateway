@@ -81,6 +81,7 @@ namespace SmartHome.Application
                 else if (e.ApplicationMessage.Topic == "Home/Curtain/SetPosition3")
                 {
                     int i = (int)float.Parse(sVal);
+                    _logger.LogInformation("value :{0}",i);
                     Task.Run(async () => { await _curtainHelper.SetCurtain(3, i); });
                 }
                 else if(e.ApplicationMessage.Topic == "Home/Curtain/Stop2")
@@ -233,6 +234,10 @@ namespace SmartHome.Application
         private void SetupSubscribe()
         {
             Subscribe("Home/Curtain/Set"); //设置窗帘开合百分比
+            Subscribe("Home/Curtain/SetPosition2");
+            Subscribe("Home/Curtain/SetPosition3");
+            Subscribe("Home/Curtain/Stop3");
+            Subscribe("Home/Curtain/Stop2");
             Subscribe("Home/Curtain/GetStatus");
             Subscribe("Home/Curtain/Command"); //接收命令:open,close,stop
             Subscribe("Home/Hailin/GetState");
