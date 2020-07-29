@@ -137,18 +137,18 @@ namespace SmartHome.Application
                 //客房空调
                 else if (e.ApplicationMessage.Topic == "Home/Sanling/00/SetState")
                 {
-                    if(sVal == "Off")
+                    if(sVal.ToLower() == "off")
                     {
                         Task.Run(async () => { await _hvacHelper.TurnOffAC(0); });
 
-                    }else if(sVal == "Heat")
+                    }else if(sVal.ToLower() == "heat")
                     {
                         Task.Run(async () => { 
                             await _hvacHelper.TurnOnAC(0);
                             await _hvacHelper.SetMode(0, WorkMode.Heat);
                         });
                     }
-                    else // vVal == "Cool"
+                    else if(sVal.ToLower() == "cool")
                     {
                         Task.Run(async () => {
                             await _hvacHelper.TurnOnAC(0);
@@ -164,19 +164,19 @@ namespace SmartHome.Application
                 //主卧空调
                 else if (e.ApplicationMessage.Topic == "Home/Sanling/01/SetState")
                 {
-                    if (sVal == "Off")
+                    if (sVal.ToLower() == "off")
                     {
                         Task.Run(async () => { await _hvacHelper.TurnOffAC(1); });
 
                     }
-                    else if (sVal == "Heat")
+                    else if (sVal.ToLower() == "heat")
                     {
                         Task.Run(async () => {
                             await _hvacHelper.TurnOnAC(1);
                             await _hvacHelper.SetMode(1, WorkMode.Heat);
                         });
                     }
-                    else // vVal == "Cool"
+                    else if(sVal.ToLower() == "cool")
                     {
                         Task.Run(async () => {
                             await _hvacHelper.TurnOnAC(1);
@@ -220,19 +220,19 @@ namespace SmartHome.Application
                 //客厅空调
                 else if (e.ApplicationMessage.Topic == "Home/Sanling/03/SetState")
                 {
-                    if (sVal == "Off")
+                    if (sVal.ToLower() == "off")
                     {
                         Task.Run(async () => { await _hvacHelper.TurnOffAC(3); });
 
                     }
-                    else if (sVal == "Heat")
+                    else if (sVal.ToLower() == "heat")
                     {
                         Task.Run(async () => {
                             await _hvacHelper.TurnOnAC(3);
                             await _hvacHelper.SetMode(3, WorkMode.Heat);
                         });
                     }
-                    else // vVal == "Cool"
+                    else if( sVal.ToLower() == "cool")
                     {
                         Task.Run(async () => {
                             await _hvacHelper.TurnOnAC(3);
