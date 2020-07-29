@@ -68,6 +68,7 @@ namespace SmartHome.Application
                 _logger.LogInformation("");
 
                 /*   窗帘  */
+                #region 窗帘
                 if (e.ApplicationMessage.Topic == "Home/Curtain/Set")
                 {
                     var obj = JsonConvert.DeserializeObject<CurtainHelper.CurtainStateObject>(sVal);
@@ -124,14 +125,129 @@ namespace SmartHome.Application
                         });
                     }
                 }
+                #endregion
                 /*   空调  */
+                #region 空调
                 else if (e.ApplicationMessage.Topic == "Home/Mitsubishi/Command")
                 {
                     var obj = JsonConvert.DeserializeObject<HvacStateObject>(sVal);
                     Task.Run(async () => { await _hvacHelper.UpdateStateObject(obj); });
 
                 }
+                //客房空调
+                else if (e.ApplicationMessage.Topic == "Home/Sanling/00/SetState")
+                {
+                    if(sVal == "Off")
+                    {
+                        Task.Run(async () => { await _hvacHelper.TurnOffAC(0); });
 
+                    }else if(sVal == "Heat")
+                    {
+                        Task.Run(async () => { 
+                            await _hvacHelper.TurnOnAC(0);
+                            await _hvacHelper.SetMode(0, WorkMode.Heat);
+                        });
+                    }
+                    else // vVal == "Cool"
+                    {
+                        Task.Run(async () => {
+                            await _hvacHelper.TurnOnAC(0);
+                            await _hvacHelper.SetMode(0, WorkMode.Cool);
+                        });
+                    }
+                }
+                else if (e.ApplicationMessage.Topic == "Home/Sanling/00/SetTarget")
+                {
+                    var temp = float.Parse(sVal);
+                    Task.Run(async () => { await _hvacHelper.SetTemperature(0, temp); });
+                }
+                //主卧空调
+                else if (e.ApplicationMessage.Topic == "Home/Sanling/01/SetState")
+                {
+                    if (sVal == "Off")
+                    {
+                        Task.Run(async () => { await _hvacHelper.TurnOffAC(1); });
+
+                    }
+                    else if (sVal == "Heat")
+                    {
+                        Task.Run(async () => {
+                            await _hvacHelper.TurnOnAC(1);
+                            await _hvacHelper.SetMode(1, WorkMode.Heat);
+                        });
+                    }
+                    else // vVal == "Cool"
+                    {
+                        Task.Run(async () => {
+                            await _hvacHelper.TurnOnAC(1);
+                            await _hvacHelper.SetMode(1, WorkMode.Cool);
+                        });
+                    }
+                }
+                else if (e.ApplicationMessage.Topic == "Home/Sanling/01/SetTarget")
+                {
+                    var temp = float.Parse(sVal);
+                    Task.Run(async () => { await _hvacHelper.SetTemperature(1, temp); });
+                }
+                //书房空调
+                else if (e.ApplicationMessage.Topic == "Home/Sanling/02/SetState")
+                {
+                    if (sVal.ToLower() == "off")
+                    {
+                        Task.Run(async () => { await _hvacHelper.TurnOffAC(2); });
+
+                    }
+                    else if (sVal.ToLower() == "heat")
+                    {
+                        Task.Run(async () => {
+                            await _hvacHelper.TurnOnAC(2);
+                            await _hvacHelper.SetMode(2, WorkMode.Heat);
+                        });
+                    }
+                    else if(sVal.ToLower() == "cool")
+                    {
+                        Task.Run(async () => {
+                            await _hvacHelper.TurnOnAC(2);
+                            await _hvacHelper.SetMode(2, WorkMode.Cool);
+                        });
+                    }
+                }
+                else if (e.ApplicationMessage.Topic == "Home/Sanling/02/SetTarget")
+                {
+                    var temp = float.Parse(sVal);
+                    Task.Run(async () => { await _hvacHelper.SetTemperature(2, temp); });
+                }
+                //客厅空调
+                else if (e.ApplicationMessage.Topic == "Home/Sanling/03/SetState")
+                {
+                    if (sVal == "Off")
+                    {
+                        Task.Run(async () => { await _hvacHelper.TurnOffAC(3); });
+
+                    }
+                    else if (sVal == "Heat")
+                    {
+                        Task.Run(async () => {
+                            await _hvacHelper.TurnOnAC(3);
+                            await _hvacHelper.SetMode(3, WorkMode.Heat);
+                        });
+                    }
+                    else // vVal == "Cool"
+                    {
+                        Task.Run(async () => {
+                            await _hvacHelper.TurnOnAC(3);
+                            await _hvacHelper.SetMode(3, WorkMode.Cool);
+                        });
+                    }
+                }
+                else if (e.ApplicationMessage.Topic == "Home/Sanling/03/SetTarget")
+                {
+                    var temp = float.Parse(sVal);
+                    Task.Run(async () => { await _hvacHelper.SetTemperature(3, temp); });
+                }
+                #endregion
+                /*   灯光  */
+                #region 灯光
                 else if (e.ApplicationMessage.Topic == "Home/LightScene/Livingroom")
                 {
                     int i = (int)float.Parse(sVal);
@@ -157,6 +273,7 @@ namespace SmartHome.Application
                     int i = (int)float.Parse(sVal);
                     Task.Run(async () => { await _lightHelper.SceneDinnerRoomSet((SceneState)i); });
                 }
+                #endregion
                 else if (e.ApplicationMessage.Topic == "Home/Mode")
                 {
                     int i = int.Parse(sVal);
@@ -195,6 +312,7 @@ namespace SmartHome.Application
                         Task.Run(async () => { await _lightHelper.CloseWindowLight(2); });
                     }
                 }
+                
             });
 
             _mqttClient.UseDisconnectedHandler(async e => {
@@ -243,6 +361,14 @@ namespace SmartHome.Application
             Subscribe("Home/Hailin/GetState");
             Subscribe("Home/Hailin/Command");
             Subscribe("Home/Mitsubishi/Command");
+            Subscribe("Home/Sanling/00/SetState");
+            Subscribe("Home/Sanling/00/SetTarget");
+            Subscribe("Home/Sanling/01/SetState");
+            Subscribe("Home/Sanling/01/SetTarget");
+            Subscribe("Home/Sanling/02/SetState");
+            Subscribe("Home/Sanling/02/SetTarget");
+            Subscribe("Home/Sanling/03/SetState");
+            Subscribe("Home/Sanling/03/SetTarget");
             Subscribe("Home/LightScene/Livingroom");
             Subscribe("Home/LightScene/Workroom");
             Subscribe("Home/LightScene/Bedroom");

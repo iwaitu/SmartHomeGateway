@@ -50,6 +50,11 @@ namespace SmartHome.Application
                        .WithAtLeastOnceQoS()
                        .Build();
                 await _mqttHelper.Publish(message);
+                var message1 = new MqttApplicationMessageBuilder().WithTopic("Home/Curtain/" + id + "/State")
+                       .WithPayload(obj.Status.ToString())
+                       .WithAtLeastOnceQoS()
+                       .Build();
+                await _mqttHelper.Publish(message);
                 return obj;
             }
             return null;

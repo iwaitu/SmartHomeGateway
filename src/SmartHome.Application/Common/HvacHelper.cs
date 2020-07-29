@@ -3,6 +3,7 @@ using MQTTnet;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace SmartHome.Application
@@ -67,6 +68,45 @@ namespace SmartHome.Application
                        .WithAtLeastOnceQoS()
                        .Build();
                     await _mqttHelper.Publish(message);
+                    var message1 = new MqttApplicationMessageBuilder().WithTopic("Home/Sanling/" + codes[5] + "/Current")
+                       .WithPayload(obj.CurrentTemperature.ToString())
+                       .WithAtLeastOnceQoS()
+                       .Build();
+                    await _mqttHelper.Publish(message1);
+                    if(obj.Switch == SwitchState.open)
+                    {
+                        if(obj.Mode == WorkMode.Cool)
+                        {
+                            var message2 = new MqttApplicationMessageBuilder().WithTopic("Home/Sanling/" + codes[5] + "/State")
+                                       .WithPayload("COOL")
+                                       .WithAtLeastOnceQoS()
+                                       .Build();
+                            await _mqttHelper.Publish(message2);
+                        }
+                        else if(obj.Mode == WorkMode.Heat)
+                        {
+                            var message2 = new MqttApplicationMessageBuilder().WithTopic("Home/Sanling/" + codes[5] + "/State")
+                                       .WithPayload("HEAT")
+                                       .WithAtLeastOnceQoS()
+                                       .Build();
+                            await _mqttHelper.Publish(message2);
+                        }
+                        
+                    }
+                    else
+                    {
+                        var message2 = new MqttApplicationMessageBuilder().WithTopic("Home/Sanling/" + codes[5] + "/State")
+                                       .WithPayload("OFF")
+                                       .WithAtLeastOnceQoS()
+                                       .Build();
+                        await _mqttHelper.Publish(message2);
+                    }
+                    var message3 = new MqttApplicationMessageBuilder().WithTopic("Home/Sanling/" + codes[5] + "/TargetSet")
+                       .WithPayload(obj.TemperatureSet.ToString())
+                       .WithAtLeastOnceQoS()
+                       .Build();
+                    await _mqttHelper.Publish(message3);
+
                 }
                 else
                 {
@@ -82,6 +122,45 @@ namespace SmartHome.Application
                        .WithAtLeastOnceQoS()
                        .Build();
                     await _mqttHelper.Publish(message);
+                    var message1 = new MqttApplicationMessageBuilder().WithTopic("Home/Sanling/" + codes[5] + "/Current")
+                      .WithPayload(obj.CurrentTemperature.ToString())
+                      .WithAtLeastOnceQoS()
+                      .Build();
+                    await _mqttHelper.Publish(message1);
+                    if (obj.Switch == SwitchState.open)
+                    {
+                        if (obj.Mode == WorkMode.Cool)
+                        {
+                            var message2 = new MqttApplicationMessageBuilder().WithTopic("Home/Sanling/" + codes[5] + "/State")
+                                       .WithPayload("COOL")
+                                       .WithAtLeastOnceQoS()
+                                       .Build();
+                            await _mqttHelper.Publish(message2);
+                        }
+                        else if (obj.Mode == WorkMode.Heat)
+                        {
+                            var message2 = new MqttApplicationMessageBuilder().WithTopic("Home/Sanling/" + codes[5] + "/State")
+                                       .WithPayload("HEAT")
+                                       .WithAtLeastOnceQoS()
+                                       .Build();
+                            await _mqttHelper.Publish(message2);
+                        }
+
+                    }
+                    else
+                    {
+                        var message2 = new MqttApplicationMessageBuilder().WithTopic("Home/Sanling/" + codes[5] + "/State")
+                                       .WithPayload("OFF")
+                                       .WithAtLeastOnceQoS()
+                                       .Build();
+                        await _mqttHelper.Publish(message2);
+                    }
+                    var message3 = new MqttApplicationMessageBuilder().WithTopic("Home/Sanling/" + codes[5] + "/TargetSet")
+                       .WithPayload(obj.TemperatureSet.ToString())
+                       .WithAtLeastOnceQoS()
+                       .Build();
+                    await _mqttHelper.Publish(message3);
+
                     if (obj.Id == "02")
                     {
                         if (obj.Switch == SwitchState.open)
