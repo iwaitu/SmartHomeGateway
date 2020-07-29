@@ -73,6 +73,34 @@ namespace SmartHome.Application
                     var obj = JsonConvert.DeserializeObject<CurtainHelper.CurtainStateObject>(sVal);
                     Task.Run(async () => { await _curtainHelper.SetCurtain(obj.Id, obj.Status); });
                 }
+                else if(e.ApplicationMessage.Topic == "Home/Curtain/SetPosition2")
+                {
+                    int i = (int)float.Parse(sVal);
+                    Task.Run(async () => { await _curtainHelper.SetCurtain(2, i); });
+                }
+                else if (e.ApplicationMessage.Topic == "Home/Curtain/SetPosition3")
+                {
+                    int i = (int)float.Parse(sVal);
+                    Task.Run(async () => { await _curtainHelper.SetCurtain(3, i); });
+                }
+                else if(e.ApplicationMessage.Topic == "Home/Curtain/Stop2")
+                {
+                    var task1 = Task.Run(async () =>
+                    {
+                        await _curtainHelper.Stop(2);
+                        await Task.Delay(100);
+                        await _curtainHelper.GetCurtainStatus(2);
+                    });
+                }
+                else if (e.ApplicationMessage.Topic == "Home/Curtain/Stop3")
+                {
+                    var task1 = Task.Run(async () =>
+                    {
+                        await _curtainHelper.Stop(3);
+                        await Task.Delay(100);
+                        await _curtainHelper.GetCurtainStatus(3);
+                    });
+                }
                 else if (e.ApplicationMessage.Topic == "Home/Curtain/Command")
                 {
                     var obj = JsonConvert.DeserializeObject<CurtainHelper.CurtainStateObject>(sVal);

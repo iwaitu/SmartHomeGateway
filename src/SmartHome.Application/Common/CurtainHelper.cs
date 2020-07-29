@@ -34,7 +34,7 @@ namespace SmartHome.Application
             _listener = curtainListener;
         }
 
-        public async Task OnReceiveData(string data)
+        public async Task<CurtainStateObject> OnReceiveData(string data)
         {
             _logger.LogInformation(data);
             Regex reg = new Regex("00 00 00 00 00 06 55 01 (.+) 01 01 (.+)");
@@ -50,14 +50,56 @@ namespace SmartHome.Application
                        .WithAtLeastOnceQoS()
                        .Build();
                 await _mqttHelper.Publish(message);
+                return obj;
             }
-            
+            return null;
         }
 
-        public async Task GetCurtainStatus(int id)
+        public async Task<CurtainStateObject> OnReceiveMotorData(string data)
+        {
+            _logger.LogInformation(data);
+            Regex reg = new Regex("00 00 00 00 00 06 55 01 (.+) 01 01 (.+)");
+            var match = reg.Match(data);
+            if (match.Success && match.Groups.Count == 3)
+            {
+                var id = int.Parse(match.Groups[1].ToString(), System.Globalization.NumberStyles.HexNumber);
+                var status = int.Parse(match.Groups[2].ToString(), System.Globalization.NumberStyles.HexNumber);
+                var obj = new CurtainStateObject { Id = id, Status = status };
+                return await Task.FromResult(obj);
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 查询窗帘当前百分比
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<int> GetCurtainStatus(int id)
         {
             var cmd = string.Format("00 00 00 00 00 06 55 01 {0} 01 02 01",id.ToString("X2"));
-            await _listener.SendCommand(cmd);
+            var ret = await _listener.SendCommand(cmd);
+            if(ret != null)
+            {
+                return ret.Status;
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// 查询电机状态
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<int> GetCurtainMotorStatus(int id)
+        {
+            var cmd = string.Format("00 00 00 00 00 06 55 01 {0} 01 05 01", id.ToString("X2"));
+            var ret = await _listener.SendMotorCommand(cmd);
+            if (ret != null)
+            {
+                return ret.Status;
+            }
+            return -1;
         }
 
         public async Task SetCurtain(int id ,int value)

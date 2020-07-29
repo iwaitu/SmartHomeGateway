@@ -99,7 +99,7 @@ namespace SmartHome.Application
             }
         }
 
-        public async Task SendCommand(string data)
+        public async Task<CurtainHelper.CurtainStateObject> SendCommand(string data)
         {
             var cmd = CRCHelper.StringToByteArray(data.Replace(" ", ""));
 
@@ -111,10 +111,30 @@ namespace SmartHome.Application
                 var response = await ReceiveAsync(socket);
                 if(_curtainHelper != null)
                 {
-                    await _curtainHelper.OnReceiveData(response);
+                    return await _curtainHelper.OnReceiveData(response);
                 }
+                return null;
             }
             
+        }
+
+        public async Task<CurtainHelper.CurtainStateObject> SendMotorCommand(string data)
+        {
+            var cmd = CRCHelper.StringToByteArray(data.Replace(" ", ""));
+
+            var str = BitConverter.ToString(cmd, 0, cmd.Length).Replace("-", " ");
+            _logger.LogInformation("SendCmd : " + str);
+            using (var socket = SafeSocket.ConnectSocket(remoteEP))
+            {
+                await SendAsync(socket, cmd, 0, cmd.Length, 0).ConfigureAwait(false);
+                var response = await ReceiveAsync(socket);
+                if (_curtainHelper != null)
+                {
+                    return await _curtainHelper.OnReceiveMotorData(response);
+                }
+                return null;
+            }
+
         }
 
         private Task<int> SendAsync(Socket client, byte[] buffer, int offset,

@@ -30,22 +30,45 @@ namespace SmartHome.Application.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}", Name = "Get")]
+        [HttpGet("Get")]
         public async Task<int> Get(int id)
         {
             if (id < 2 || id > 3)
             {
                 return 0;
             }
-            await _curtainHelper.GetCurtainStatus(id);
-            await Task.Delay(500).ConfigureAwait(false);
-            var obj = new Application.CurtainHelper.CurtainStateObject();
-            while(_cache.TryGetValue(id,out obj)==false)
+            return await _curtainHelper.GetCurtainStatus(id);
+            //await Task.Delay(500).ConfigureAwait(false);
+            //var obj = new Application.CurtainHelper.CurtainStateObject();
+            //while(_cache.TryGetValue(id,out obj)==false)
+            //{
+            //    await Task.Delay(100).ConfigureAwait(false);
+            //}
+            //return obj.Status;
+
+        }
+        
+        /// <summary>
+        /// 获取电机状态
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("GetMotor")]
+        public async Task<int> GetMotor(int id)
+        {
+            if (id < 2 || id > 3)
             {
-                await Task.Delay(100).ConfigureAwait(false);
+                return 0;
             }
-            //return retPercent;
-            return obj.Status;
+            return await _curtainHelper.GetCurtainMotorStatus(id);
+            
+            //await Task.Delay(500).ConfigureAwait(false);
+            //var obj = new Application.CurtainHelper.CurtainStateObject();
+            //while(_cache.TryGetValue(id,out obj)==false)
+            //{
+            //    await Task.Delay(100).ConfigureAwait(false);
+            //}
+            //return obj.Status;
 
         }
 

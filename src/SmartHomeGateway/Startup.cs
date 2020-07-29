@@ -89,7 +89,7 @@ namespace SmartHomeGateway
                     {
                         Name = "nngeo.com",
                         Email = string.Empty,
-                        Url = new Uri("https://www.nngeo.com"),
+                        Url = new Uri("https://www.ivilson.com"),
                     },
                 });
 
@@ -146,7 +146,7 @@ namespace SmartHomeGateway
 
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "RoadNetwork API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "SmartHome API V1");
             });
 
             app.UseAuthorization();
