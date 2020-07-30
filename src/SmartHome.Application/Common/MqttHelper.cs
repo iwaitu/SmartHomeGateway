@@ -155,6 +155,10 @@ namespace SmartHome.Application
                             await _hvacHelper.SetMode(0, WorkMode.Cool);
                         });
                     }
+                    else if (sVal.ToLower() == "auto")
+                    {
+                        Task.Run(async () => { await _hvacHelper.TurnOnAC(0); });
+                    }
                 }
                 else if (e.ApplicationMessage.Topic == "Home/Sanling/00/SetTarget")
                 {
@@ -182,6 +186,9 @@ namespace SmartHome.Application
                             await _hvacHelper.TurnOnAC(1);
                             await _hvacHelper.SetMode(1, WorkMode.Cool);
                         });
+                    }else if(sVal.ToLower() == "auto")
+                    {
+                        Task.Run(async () => { await _hvacHelper.TurnOnAC(1); });
                     }
                 }
                 else if (e.ApplicationMessage.Topic == "Home/Sanling/01/SetTarget")
@@ -211,6 +218,10 @@ namespace SmartHome.Application
                             await _hvacHelper.SetMode(2, WorkMode.Cool);
                         });
                     }
+                    else if (sVal.ToLower() == "auto")
+                    {
+                        Task.Run(async () => { await _hvacHelper.TurnOnAC(2); });
+                    }
                 }
                 else if (e.ApplicationMessage.Topic == "Home/Sanling/02/SetTarget")
                 {
@@ -238,6 +249,10 @@ namespace SmartHome.Application
                             await _hvacHelper.TurnOnAC(3);
                             await _hvacHelper.SetMode(3, WorkMode.Cool);
                         });
+                    }
+                    else if (sVal.ToLower() == "auto")
+                    {
+                        Task.Run(async () => { await _hvacHelper.TurnOnAC(3); });
                     }
                 }
                 else if (e.ApplicationMessage.Topic == "Home/Sanling/03/SetTarget")
