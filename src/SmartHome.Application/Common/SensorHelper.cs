@@ -16,11 +16,12 @@ namespace SmartHome.Application
         private readonly ILogger _logger;
         private INotify _notify;
 
-        public SensorHelper(ILogger<SensorHelper> logger, LightHelper lightHelper,INotify notify)
+        public SensorHelper(ILogger<SensorHelper> logger, MqttHelper mqttHelper, LightHelper lightHelper,INotify notify)
         {
             _logger = logger;
             _lightHelper = lightHelper;
             _lightHelper.SetSensorHelper(this);
+            _mqttHelper = mqttHelper;
             _notify = notify;
         }
 
