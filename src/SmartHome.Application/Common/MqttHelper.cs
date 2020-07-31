@@ -25,22 +25,24 @@ namespace SmartHome.Application
         private readonly CurtainHelper _curtainHelper;
         private readonly HvacHelper _hvacHelper;
         private readonly LightHelper _lightHelper;
+        private readonly SensorHelper _sensorHelper;
 
         private bool Started = false;
         private IMqttClientOptions options;
         private MqttClient _mqttClient;
 
-        public MqttHelper(CurtainHelper curtainHelper, HvacHelper hvacHelper, IConfiguration configuration,LightHelper lightHelper,ILogger<MqttHelper> logger)
+        public MqttHelper(CurtainHelper curtainHelper, HvacHelper hvacHelper, SensorHelper sensorHelper, IConfiguration configuration,LightHelper lightHelper,ILogger<MqttHelper> logger)
         {
             _config = configuration;
             _logger = logger;
             _curtainHelper = curtainHelper;
             _hvacHelper = hvacHelper;
             _lightHelper = lightHelper;
+            _sensorHelper = sensorHelper;
             _hvacHelper.SetMqttListener(this);
             _curtainHelper.SetMqttListener(this);
             _lightHelper.SetMqttListener(this);
-            //_lightHelper.SetCurtainHelper(_curtainHelper);
+            _sensorHelper.SetMqttListener(this);
 
             var mqtthost = _config.GetValue<string>("mqttBroken:Hostip");
             var port = _config.GetValue<int>("mqttBroken:port");
