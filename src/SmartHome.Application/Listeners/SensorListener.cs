@@ -61,8 +61,6 @@ namespace SmartHome.Application
 
         public static void StartListening(int port)
         {
-            NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-
             IPAddress ipAddress = IPAddress.Any;
             IPEndPoint localEndPoint = new IPEndPoint(ipAddress, port);
 
@@ -80,7 +78,6 @@ namespace SmartHome.Application
                     // Set the event to nonsignaled state.  
                     allDone.Reset();
 
-                    logger.Info("监听端口{0}等待连接...",port);
                     listener.BeginAccept(
                         new AsyncCallback(AcceptCallback),
                         listener);
@@ -91,7 +88,6 @@ namespace SmartHome.Application
             }
             catch (Exception e)
             {
-                logger.Error(e.ToString());
             }
 
             listener.Shutdown(SocketShutdown.Both);
@@ -130,7 +126,6 @@ namespace SmartHome.Application
                 var response = new StringBuilder(1024);
                 response.Append(BitConverter.ToString(state.buffer, 0, bytesRead)).Replace("-", " ");
                 state.sb = response;
-                logger.Info("receive data:" + response.ToString());
                 Task.Run(async () => { await _helper.OnReceiveCommand(response.ToString()); });
 
                 //继续监听
@@ -160,19 +155,14 @@ namespace SmartHome.Application
 
         private static void SendCallback(IAsyncResult ar)
         {
-            NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+            
             try
             {
                 Socket handler = (Socket)ar.AsyncState;
-
                 int bytesSent = handler.EndSend(ar);
-                logger.Info("Sent {0} bytes to {1}.", bytesSent,handler.RemoteEndPoint.ToString());
-
-
             }
             catch (Exception e)
             {
-                logger.Error(e.ToString());
             }
         }
 

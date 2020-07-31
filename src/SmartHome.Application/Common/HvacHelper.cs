@@ -3,7 +3,6 @@ using MQTTnet;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace SmartHome.Application
@@ -242,7 +241,7 @@ namespace SmartHome.Application
 
         public async Task UpdateStateObject(HvacStateObject target)
         {
-            _logger.LogInformation("updateStateObject");
+            //_logger.LogInformation("updateStateObject");
             var obj = stateobjs.FirstOrDefault(p => p.Id == target.Id);
             if(obj != null)
             {
@@ -299,7 +298,7 @@ namespace SmartHome.Application
                     await _lightHelper.UpdateACPanel();
                 }
             }
-            _logger.LogInformation("... End SyncStateObject ...");
+            //_logger.LogInformation("... End SyncStateObject ...");
         }
     }
 

@@ -104,7 +104,7 @@ namespace SmartHome.Application
             var cmd = CRCHelper.StringToByteArray(data.Replace(" ", ""));
 
             var str = BitConverter.ToString(cmd, 0, cmd.Length).Replace("-", " ");
-            _logger.LogInformation("SendCmd : " + str);
+            //_logger.LogInformation("SendCmd : " + str);
             using(var socket = SafeSocket.ConnectSocket(remoteEP))
             {
                 await SendAsync(socket, cmd, 0, cmd.Length, 0).ConfigureAwait(false);
@@ -123,7 +123,7 @@ namespace SmartHome.Application
             var cmd = CRCHelper.StringToByteArray(data.Replace(" ", ""));
 
             var str = BitConverter.ToString(cmd, 0, cmd.Length).Replace("-", " ");
-            _logger.LogInformation("SendCmd : " + str);
+            //_logger.LogInformation("SendCmd : " + str);
             using (var socket = SafeSocket.ConnectSocket(remoteEP))
             {
                 await SendAsync(socket, cmd, 0, cmd.Length, 0).ConfigureAwait(false);

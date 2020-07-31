@@ -82,7 +82,7 @@ namespace SmartHome.Application
                 else if (e.ApplicationMessage.Topic == "Home/Curtain/SetPosition3")
                 {
                     int i = (int)float.Parse(sVal);
-                    _logger.LogInformation("value :{0}",i);
+                    //_logger.LogInformation("value :{0}",i);
                     Task.Run(async () => { await _curtainHelper.SetCurtain(3, i); });
                 }
                 else if(e.ApplicationMessage.Topic == "Home/Curtain/Stop2")
@@ -354,7 +354,7 @@ namespace SmartHome.Application
                     //SetupSubscribe();
                 }
                 await _mqttClient.PublishAsync(message);
-                _logger.LogInformation(message.Topic);
+                _logger.LogInformation("publish: " + message.Topic);
             }
             catch (Exception ex)
             {

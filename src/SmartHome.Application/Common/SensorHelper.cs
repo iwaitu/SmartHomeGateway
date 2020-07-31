@@ -36,6 +36,7 @@ namespace SmartHome.Application
 
         public async Task OnReceiveCommand(string Command)
         {
+            _logger.LogWarning(Command);
             if(Command == "01 01 0D") //门道感应器
             {
                 await OpenDoor();
@@ -80,7 +81,7 @@ namespace SmartHome.Application
                        .WithAtLeastOnceQoS()
                        .Build();
                 await _mqttHelper.Publish(message);
-                _logger.LogInformation("烟雾探测器报警");
+                _logger.LogWarning("烟雾探测器报警");
                 _notify.Send("厨房烟雾");
             }
             else if (Command == "03 00 0D") 
@@ -90,7 +91,7 @@ namespace SmartHome.Application
                        .WithAtLeastOnceQoS()
                        .Build();
                 await _mqttHelper.Publish(message);
-                _logger.LogInformation("烟雾探测器取消报警");
+                _logger.LogWarning("烟雾探测器取消报警");
                 _notify.Send("厨房烟雾解除");
             }
             else if (Command == "04 01 0D") //主灯打开成功

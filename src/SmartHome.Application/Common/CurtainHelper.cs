@@ -36,7 +36,7 @@ namespace SmartHome.Application
 
         public async Task<CurtainStateObject> OnReceiveData(string data)
         {
-            _logger.LogInformation(data);
+            //_logger.LogInformation(data);
             Regex reg = new Regex("00 00 00 00 00 06 55 01 (.+) 01 01 (.+)");
             var match = reg.Match(data);
             if(match.Success && match.Groups.Count == 3)
@@ -62,7 +62,7 @@ namespace SmartHome.Application
 
         public async Task<CurtainStateObject> OnReceiveMotorData(string data)
         {
-            _logger.LogInformation(data);
+            //_logger.LogInformation(data);
             Regex reg = new Regex("00 00 00 00 00 06 55 01 (.+) 01 01 (.+)");
             var match = reg.Match(data);
             if (match.Success && match.Groups.Count == 3)

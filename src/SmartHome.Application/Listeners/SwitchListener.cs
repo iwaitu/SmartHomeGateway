@@ -62,7 +62,7 @@ namespace SmartHome.Application
                     var response = await ReceiveAsync(client);
                     if (!string.IsNullOrWhiteSpace(response) && !string.IsNullOrEmpty(response))
                     {
-                        _logger.LogInformation("Receive:" + response);
+                        //_logger.LogInformation("Receive:" + response);
                         await _helper.OnReceiveCommand(response);
                     }
                     //每5秒发送一次心跳指令
@@ -155,7 +155,7 @@ namespace SmartHome.Application
                              .ToArray();
         }
 
-        public async Task<string> SendCommand(string data,bool log = true)
+        public async Task<string> SendCommand(string data,bool log = false)
         {
             try
             {
@@ -186,7 +186,7 @@ namespace SmartHome.Application
             }
             catch (Exception ex)
             {
-                _logger.LogInformation("err data:" + data);
+                _logger.LogError("err data:" + data);
                 _logger.LogError(ex.ToString());
                 return string.Empty;
             }
