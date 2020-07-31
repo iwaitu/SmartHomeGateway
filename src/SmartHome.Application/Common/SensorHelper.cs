@@ -40,11 +40,6 @@ namespace SmartHome.Application
             if(Command == "01 01 0D") //门道感应器
             {
                 await OpenDoor();
-                var message = new MqttApplicationMessageBuilder().WithTopic("Home/Sensor/Door")
-                       .WithPayload("1")
-                       .WithAtLeastOnceQoS()
-                       .Build();
-                await _mqttHelper.Publish(message);
             }
             else if(Command == "01 00 0D")
             {
@@ -58,11 +53,6 @@ namespace SmartHome.Application
             else if (Command == "02 01 0D") //过道探测器报警
             {
                 await OpenAisle();
-                var message = new MqttApplicationMessageBuilder().WithTopic("Home/Sensor/Aisle")
-                       .WithPayload("1")
-                       .WithAtLeastOnceQoS()
-                       .Build();
-                await _mqttHelper.Publish(message);
                 
             }
             else if (Command == "02 00 0D") 
@@ -129,6 +119,11 @@ namespace SmartHome.Application
                     break;
                 case StateMode.Out:
                     //开始报警
+                    var message = new MqttApplicationMessageBuilder().WithTopic("Home/Sensor/Aisle")
+                      .WithPayload("1")
+                      .WithAtLeastOnceQoS()
+                      .Build();
+                    await _mqttHelper.Publish(message);
                     await _lightHelper.OpenAisle(100);
                     _logger.LogWarning("入侵报警,发送短信通知");
                     _notify.Send("走廊");
@@ -149,7 +144,7 @@ namespace SmartHome.Application
         /// 打开门道灯光
         /// </summary>
         /// <returns></returns>
-        public async Task OpenDoor()
+        public async Task OpenDoor(SensorType type = SensorType.Door)
         {
             switch (_lightHelper.CurrentStateMode)
             {
@@ -159,6 +154,28 @@ namespace SmartHome.Application
                     break;
                 case StateMode.Out:
                     //开始报警
+                    MqttApplicationMessage message;
+                    switch (type)
+                    {
+                        case SensorType.Door:
+                            message = new MqttApplicationMessageBuilder()
+                                .WithTopic("Home/Sensor/Door")
+                                .WithPayload("1")
+                                .WithAtLeastOnceQoS()
+                                .Build();
+                            await _mqttHelper.Publish(message);
+                            break;
+                        case SensorType.Aisle:
+                            message = new MqttApplicationMessageBuilder()
+                                .WithTopic("Home/Sensor/Aisle")
+                                .WithPayload("1")
+                                .WithAtLeastOnceQoS()
+                                .Build();
+                            await _mqttHelper.Publish(message);
+                            break;
+                        default:
+                            break;
+                    }
                     await _lightHelper.OpenDoor(100);
                     _logger.LogWarning("入侵报警,发送短信通知");
                     _notify.Send("门道");
@@ -178,6 +195,11 @@ namespace SmartHome.Application
         }
 
 
-        
+        public enum SensorType
+        {
+            Door,
+            Aisle,
+            Smoke
+        }
     }
 }
