@@ -1,14 +1,11 @@
-﻿using Hangfire.Dashboard;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Hangfire.Annotations;
+using Hangfire.Dashboard;
 
 namespace SmartHomeGateway.Utils
 {
     public class DashboardNoAuthorizationFilter : IDashboardAuthorizationFilter
     {
-        public bool Authorize(DashboardContext dashboardContext)
+        public bool Authorize([NotNull] DashboardContext dashboardContext)
         {
             return true;
         }

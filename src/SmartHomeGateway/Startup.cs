@@ -155,12 +155,10 @@ namespace SmartHomeGateway
 
             app.UseAuthorization();
 
-            var dashboardOptions = new DashboardOptions
+            app.UseHangfireDashboard("/jobs", new DashboardOptions()
             {
-                IgnoreAntiforgeryToken = true
-            };
-            dashboardOptions.Authorization = new[] { new DashboardNoAuthorizationFilter() };
-            app.UseHangfireDashboard("/hangfire",dashboardOptions);
+                Authorization = new[] { new DashboardNoAuthorizationFilter() }
+            });
 
             app.UseEndpoints(endpoints =>
             {
