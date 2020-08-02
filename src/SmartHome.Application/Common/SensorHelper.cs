@@ -164,10 +164,12 @@ namespace SmartHome.Application
 
         public async Task CallAlert(SensorType type)
         {
+            _logger.LogWarning("入侵报警计划任务");
             if (_lightHelper != null && _mqttHelper != null)
             {
-                if(_lightHelper.CurrentStateMode == StateMode.Out)
+                if (_lightHelper.CurrentStateMode == StateMode.Out)
                 {
+                    _logger.LogWarning("入侵报警执行中...");
                     MqttApplicationMessage message;
                     switch (type)
                     {
@@ -178,7 +180,6 @@ namespace SmartHome.Application
                                 .WithAtLeastOnceQoS()
                                 .Build();
                             await _mqttHelper.Publish(message);
-                            //_logger.LogWarning("入侵报警,发送短信通知");
                             _notify.Send("门道");
                             break;
                         case SensorType.Aisle:
@@ -194,6 +195,7 @@ namespace SmartHome.Application
                             break;
                     }
                 }
+                _logger.LogWarning("入侵报警取消...");
             }
         }
 
