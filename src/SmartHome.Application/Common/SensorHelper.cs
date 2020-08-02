@@ -1,6 +1,7 @@
 ﻿using Hangfire;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
+using SmartHome.Application.Common;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -52,7 +53,7 @@ namespace SmartHome.Application
             }
             else if (Command == "02 01 0D") //过道探测器报警
             {
-                await OpenAisle();
+                await OpenAisle(SensorType.Aisle);
                 
             }
             else if (Command == "02 00 0D") 
@@ -108,7 +109,7 @@ namespace SmartHome.Application
         /// 打开过道灯光
         /// </summary>
         /// <returns></returns>
-        public async Task OpenAisle()
+        public async Task OpenAisle(SensorType type = SensorType.Door)
         {
 
             switch (_lightHelper.CurrentStateMode)
@@ -119,14 +120,9 @@ namespace SmartHome.Application
                     break;
                 case StateMode.Out:
                     //开始报警
-                    var message = new MqttApplicationMessageBuilder().WithTopic("Home/Sensor/Aisle")
-                      .WithPayload("1")
-                      .WithAtLeastOnceQoS()
-                      .Build();
-                    await _mqttHelper.Publish(message);
-                    await _lightHelper.OpenAisle(100);
-                    _logger.LogWarning("入侵报警,发送短信通知");
-                    _notify.Send("走廊");
+                    await _lightHelper.OpenDoor(100);
+                    BackgroundJob.Schedule(() => CallAlert(type), TimeSpan.FromSeconds(15));
+                    BackgroundJob.Schedule(() => _lightHelper.OpenAisle(50), TimeSpan.FromSeconds(15));
                     break;
                 case StateMode.Read:
                     await _lightHelper.OpenAisle(40);
@@ -153,7 +149,25 @@ namespace SmartHome.Application
                     var jobId = BackgroundJob.Schedule(() => _lightHelper.OpenDoor(50), TimeSpan.FromSeconds(15));
                     break;
                 case StateMode.Out:
+                    await _lightHelper.OpenDoor(100);
                     //开始报警
+                    //await Task.Run(async () => { await CallAlert(type); });
+                    BackgroundJob.Schedule(() => _lightHelper.OpenDoor(50), TimeSpan.FromSeconds(15));
+                    BackgroundJob.Schedule(() => CallAlert(type), TimeSpan.FromSeconds(15));
+                    break;
+                case StateMode.Read:
+                    await _lightHelper.OpenDoor(40);
+                    break;
+            }
+            
+        }
+
+        public async Task CallAlert(SensorType type)
+        {
+            if (_lightHelper != null && _mqttHelper != null)
+            {
+                if(_lightHelper.CurrentStateMode == StateMode.Out)
+                {
                     MqttApplicationMessage message;
                     switch (type)
                     {
@@ -164,6 +178,8 @@ namespace SmartHome.Application
                                 .WithAtLeastOnceQoS()
                                 .Build();
                             await _mqttHelper.Publish(message);
+                            //_logger.LogWarning("入侵报警,发送短信通知");
+                            _notify.Send("门道");
                             break;
                         case SensorType.Aisle:
                             message = new MqttApplicationMessageBuilder()
@@ -172,26 +188,18 @@ namespace SmartHome.Application
                                 .WithAtLeastOnceQoS()
                                 .Build();
                             await _mqttHelper.Publish(message);
+                            _notify.Send("走道");
                             break;
                         default:
                             break;
                     }
-                    await _lightHelper.OpenDoor(100);
-                    _logger.LogWarning("入侵报警,发送短信通知");
-                    _notify.Send("门道");
-                    
-                    break;
-                case StateMode.Read:
-                    await _lightHelper.OpenDoor(40);
-                    break;
+                }
             }
-            
         }
 
         public async Task CloseDoor()
         {
             await _lightHelper.CloseDoor();
-
         }
 
 

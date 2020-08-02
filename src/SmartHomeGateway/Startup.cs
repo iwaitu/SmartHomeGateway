@@ -15,6 +15,7 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using System.Reflection;
 using System.IO;
+using SmartHome.Application.Common;
 
 namespace SmartHomeGateway
 {
@@ -129,6 +130,8 @@ namespace SmartHomeGateway
             });
 
             services.AddSwaggerGenNewtonsoftSupport();
+
+            ServiceLocator.SetLocatorProvider(services.BuildServiceProvider());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

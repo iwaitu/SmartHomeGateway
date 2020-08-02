@@ -300,7 +300,11 @@ namespace SmartHome.Application
                         Task.Run(async () => { await _lightHelper.HomeMode(); });
                     } else if (i == 1)
                     {
-                        Task.Run(async () => { await _lightHelper.OutMode(); });
+                        Task.Run(async () => {
+                            //30秒后进入布放状态
+                            await Task.Delay(30000);
+                            await _lightHelper.OutMode(); 
+                        });
                     } else if (i == 2)
                     {
                         Task.Run(async () => { await _lightHelper.ReadMode(); });
