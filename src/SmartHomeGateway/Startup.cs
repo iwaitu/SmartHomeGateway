@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using System.Reflection;
 using System.IO;
 using SmartHome.Application.Common;
+using SmartHomeGateway.Utils;
 
 namespace SmartHomeGateway
 {
@@ -154,7 +155,12 @@ namespace SmartHomeGateway
 
             app.UseAuthorization();
 
-            app.UseHangfireDashboard();
+            var dashboardOptions = new DashboardOptions
+            {
+                IgnoreAntiforgeryToken = true
+            };
+            dashboardOptions.Authorization = new[] { new DashboardNoAuthorizationFilter() };
+            app.UseHangfireDashboard("/hangfire",dashboardOptions);
 
             app.UseEndpoints(endpoints =>
             {
